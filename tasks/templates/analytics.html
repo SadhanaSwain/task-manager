@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>📊 Task Analytics</h2>
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h5>Status Breakdown</h5>
+            <canvas id="statusChart" width="400" height="300"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h5>Category Breakdown</h5>
+            <canvas id="categoryChart" width="400" height="300"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Get the data passed from Django view (already marked safe)
+    const statusData = JSON.parse('{{ status_data|safe|escapejs }}');
+    const categoryData = JSON.parse('{{ category_data|safe|escapejs }}');
+
+    // Prepare Status Chart Data
+    const statusLabels = statusData.map(item => item.status);
+    const statusCounts = statusData.map(item => item.count);
+
+    const ctxStatus = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctxStatus, {
+        type: 'bar',
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                label: 'Tasks by Status',
+                data: statusCounts,
+                backgroundColor: ['#f39c12', '#28a745', '#dc3545'],  // Orange, Green, Red
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Prepare Category Chart Data
+    const categoryLabels = categoryData.map(item => item.category);
+    const categoryCounts = categoryData.map(item => item.count);
+
+    const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctxCategory, {
+        type: 'pie',
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                label: 'Tasks by Category',
+                data: categoryCounts,
+                backgroundColor: ['#007bff', '#6c757d', '#17a2b8'],  // Blue, Gray, Teal
+            }]
+        },
+        options: {
+            responsive: true,
+        }
+    });
+</script>
+
+{% endblock %}

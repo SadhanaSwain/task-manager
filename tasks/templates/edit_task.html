@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load form_filters %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="mb-4">✏ Edit Task</h2>
+
+    <!-- Show form errors -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            {{ form.title.label_tag }}
+            {{ form.title|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.status.label_tag }}
+            {{ form.status|add_class:"form-select" }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.category.label_tag }}
+            {{ form.category|add_class:"form-select" }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.priority.label_tag }}
+            {{ form.priority|add_class:"form-select" }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.tags.label_tag }}
+            {{ form.tags|add_class:"form-control" }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.due_date.label_tag }}
+            {{ form.due_date|add_class:"form-control" }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">💾 Update Task</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}
